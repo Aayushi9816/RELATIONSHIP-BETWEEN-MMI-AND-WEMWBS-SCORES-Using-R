@@ -1,0 +1,131 @@
+#This dataset has two types of scores MMI Score and WEMWBS Score and we'll work on finding a relationship between them.
+#A folder in R was created called Assignemnt 1, and it was set as working directory.
+setwd("~/R/QDA2021 Week3")
+MMI= read.csv('MMIdata.csv')
+#View MMI Data
+View(MMI)
+#Using function head and tail for initial checking
+#head shows us the first 6 set of data
+head(MMI)
+#tail shows us the last 6 set of data
+tail(MMI)
+#checking the number of rows in MMI data -100
+nrow(MMI)
+# We have to find what value do not fall in the range of 13(min)-65(max) range for MMI Score
+which(MMI$MMI.Score<13)
+#No value in the given data is less than 13
+which(MMI$MMI.Score>65)
+#There are two values that fall out of this range, that is row 13, 22
+#Viewing the out of range values
+MMI[13,1]
+MMI[22,1]
+#cleaning the out of range values
+MMIClean= MMI[-13,]
+MMIDataClean=MMIClean[-21,]
+#checking if the out of range values are removed
+which(MMIDataClean$MMI.Score>65)
+#No value is out of range
+#checking the number of rows after data cleaning
+nrow(MMIDataClean)
+#Now we have 98 rows
+#Viewing the new cleaned dataset
+View(MMIDataClean)
+#Descriptive statistics of cleaned data for WEMWBS Score
+#Calculating Mean of WEMWBS
+mean(MMIDataClean$WEMWBS.Score)
+#44.46939
+#Calculating Standard Deviation of WEMWBS
+sd(MMIDataClean$WEMWBS.Score)
+#11.06141
+#Calculating Maximum value from WEMWBS Dataset
+max(MMIDataClean$WEMWBS.Score)
+#70
+#Calculating Minimum value from WEMWBS Dataset
+min(MMIDataClean$WEMWBS.Score)
+#18
+#Calculating Media of the WEMWBS Score
+median(MMIDataClean$WEMWBS.Score)
+#44
+#Calculating InterQuartile Range of WEMWBS
+IQR(MMIDataClean$WEMWBS.Score)
+#15
+#Descriptive statistics of the cleaned data for MMI Score
+#Calculating Mean of MMI
+mean(MMIDataClean$MMI.Score)
+#50.88776
+#Calculating Standard Deviation of MMI
+sd(MMIDataClean$MMI.Score)
+#5.869513
+#Finding out the maximum value from MMI
+max(MMIDataClean$MMI.Score)
+#65
+#Finding out the minimum value from MMI
+min(MMIDataClean$MMI.Score)
+#34
+#Calculating median of MMI
+median(MMIDataClean$MMI.Score)
+#51
+#Calculating InterQuartile Range from the MMI Data
+IQR(MMIDataClean$MMI.Score)
+#8
+#histogram visualization of MMI score
+hist (MMIDataClean$MMI.Score, main="Histogram for MMI Score", xlab='MMI score', breaks=c (30:70))
+#histogram visualization of WEMWBS score
+hist (MMIDataClean$WEMWBS.Score, main="Histogram for WEMWBS Score", xlab='WEMWBS score', breaks=c (10:80))
+#boxplot visualization of MMI score
+boxplot (MMIDataClean$MMI.Score, main="Boxplot for MMI Score", ylim= c(30,70), ylab = "MMI score")
+#boxplot visualization-WEMWBS score
+boxplot (MMIDataClean$WEMWBS.Score, main="Boxplot for WEMWBS Score", ylim= c(10,70), ylab = "WEMWBS score")
+MMIDataClean[69,1]
+#34 value 
+#correcting the outliner found
+MMIDataClean[69,1] = round((mean(MMIDataClean$MMI.Score) - 2*sd(MMIDataClean$MMI.Score))) 
+MMIDataClean[69,1]
+# 39 is the corrected value
+#validating the corrected boxplot for MMI Score
+boxplot (MMIDataClean$MMI.Score, main="Boxplot for MMI Score", ylim= c(30,70), ylab = "MMI score")
+#Descriptive statistics for MMI Score(after removing the outlier)
+mean(MMIDataClean$MMI.Score)
+#50.93878
+sd(MMIDataClean$MMI.Score)
+#5.74154
+max(MMIDataClean$MMI.Score)
+#65
+min(MMIDataClean$MMI.Score)
+#39
+median(MMIDataClean$MMI.Score)
+#51
+IQR(MMIDataClean$MMI.Score)
+#8
+#Descriptive statistics for WEMWBS Score(No changes made)
+mean(MMIDataClean$WEMWBS.Score)
+#44.46939
+sd(MMIDataClean$WEMWBS.Score)
+#11.06141
+max(MMIDataClean$WEMWBS.Score)
+#70
+min(MMIDataClean$WEMWBS.Score)
+#18
+median(MMIDataClean$WEMWBS.Score)
+#44
+IQR(MMIDataClean$WEMWBS.Score)
+#15
+#Plotting Scatterplot- MMI score and WEMWBS score
+plot (MMIDataClean$MMI.Score,MMIDataClean$WEMWBS.Score, xlim= c(35, 70), ylim =c(10, 70), xlab="MMI score", ylab="WEMWBS score")
+#Checking for the Correlation test
+cor.test(MMIDataClean$MMI.Score,MMIDataClean$WEMWBS.Score)
+#Pearson's product-moment correlation
+#data:  MMIDataClean$MMI.Score and MMIDataClean$WEMWBS.Score
+#t = -7.3888, df = 96, p-value = 5.455e-11
+#alternative hypothesis: true correlation is not equal to 0
+#95 percent confidence interval:
+# -0.7150888 -0.4584485
+#sample estimates:
+#  cor 
+#-0.6020989
+#Checking for Regression
+model=lm(MMIDataClean$MMI.Score~MMIDataClean$WEMWBS.Score)
+#Summary of all the calculations
+summary(model)
+
+abline(model,col= "red")
